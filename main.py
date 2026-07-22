@@ -1,4 +1,4 @@
-import os, io, uuid, json, textwrap, tempfile, math, time, subprocess, shutil
+import os, io, uuid, json, textwrap, tempfile, math, time, subprocess, shutil, traceback
 import urllib.request, urllib.error, urllib.parse
 from pathlib import Path
 
@@ -11,6 +11,7 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageDraw, ImageFont
 import fitz
+import traceback
 
 load_dotenv()
 
@@ -711,13 +712,31 @@ async def generate_video(session_id: str):
             "b2_script_key": f"recordings/{session_id}/video/script.txt",
         }
 
-
-    except HTTPException:
+    
+    
+           
+    except HTTPException as e:
+        print("=" * 80)
+        print("HTTPException:", e.detail)
+        traceback.print_exc()
+        print("=" * 80)
         raise
+
     except Exception as e:
+        print("=" * 80)
+        print("VIDEO ERROR")
+        print("Type:", type(e).__name__)
+        print("Message:", str(e))
+        traceback.print_exc()
+        print("=" * 80)
         raise HTTPException(500, str(e))
+
     finally:
         for p in tmp_files:
             if p and os.path.exists(p):
-                try: os.unlink(p)
-                except: pass
+                try:
+                    os.unlink(p)
+                except:
+                    pass
+                
+   
