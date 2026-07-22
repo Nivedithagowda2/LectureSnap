@@ -1,4 +1,4 @@
-# LectureSnap
+# 📚 LectureSnap
 ### Upload anything. Understand everything.
 
 > An AI-powered pipeline that turns any lecture recording, meeting video, or PDF into structured study notes, visual slides, and a teacher-style narrated video — all stored on Backblaze B2.
@@ -16,6 +16,18 @@
 
 
 🔗 https://jumpshare.com/s/KMiDfXSERt4oo6gxI9Bg
+
+## 🚀 Features
+
+- 📄 PDF, Audio & Video Processing
+- 🎙 OpenAI Whisper Transcription
+- 🧠 AI Topic Identification using Groq Llama 3.1
+- 📝 Intelligent Study Notes
+- 🖼 Professional Slide Generation
+- 🗣 AI Teacher Narration
+- 🎬 Automatic Educational Video Generation
+- ☁ Backblaze B2 Cloud Storage 
+
 
 
 ## The Problem
@@ -37,10 +49,23 @@ Existing tools do not solve this:
 Nobody has properly built a pipeline that goes all the way from raw input — a PDF, a video, an audio recording — to a complete, high-quality study kit including structured notes, visual slides, and a narrated teacher video, fully automatically.
 
 ---
+# 💡 Solution
 
-## Our Solution — LectureSnap
+LectureSnap automatically converts learning material into a complete study kit.
 
-LectureSnap is a four-stage AI pipeline that processes any lecture recording, meeting video, or PDF and produces a complete study kit in minutes.
+Every upload becomes:
+
+✅ Structured Notes
+
+✅ AI Topic Summary
+
+✅ Professional Slides
+
+✅ Teacher-style Narrated Video
+
+✅ Stored permanently on Backblaze B2
+
+---
 
 
 
