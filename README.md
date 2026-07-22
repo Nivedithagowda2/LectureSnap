@@ -47,7 +47,7 @@ Everything saved to Backblaze B2
 
 ## 🎥 Demo Video
 
-[![LectureSnap Demo](Screenshot%202026-07-22%20142552.png)](https://youtu.be/YOUR_VIDEO_LINK)
+Click here to watch: [LectureSnap Demo](./LectureSnap_Demo.mp4)
 
 
 ## How Each Stage Works
