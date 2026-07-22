@@ -133,18 +133,18 @@ This means every output is durable, versioned, and accessible. Users can come ba
 
 ## Tech Stack
 
-| Component | Technology | Cost |
+| Component | Technology | 
 |---|---|---|
-| Backend | Python + FastAPI | Free |
-| Cloud Storage | Backblaze B2 | Free (10GB) |
+| Backend | Python + FastAPI | 
+| Cloud Storage | Backblaze B2 | 
 | PDF Extraction | PyMuPDF | Free |
-| Audio Transcription | OpenAI Whisper | Paid (per minute) |
-| AI Structuring | Groq API (Llama 3.1) | Free |
-| Image Generation | Pollinations.ai | Free |
-| Slide Creation | Pillow | Free |
-| Voice Synthesis | Microsoft edge-tts | Free |
-| Video Assembly | ffmpeg | Free |
-| Frontend | HTML + Vanilla JS | Free |
+| Audio Transcription | OpenAI Whisper | 
+| AI Structuring | Groq API (Llama 3.1) | 
+| Image Generation | Pollinations.ai | 
+| Slide Creation | Pillow | 
+| Voice Synthesis | Microsoft edge-tts | 
+| Video Assembly | ffmpeg | 
+| Frontend | HTML + Vanilla JS | 
 
 ---
 
