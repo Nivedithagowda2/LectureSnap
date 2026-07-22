@@ -44,21 +44,14 @@ Everything saved to Backblaze B2
 ```
 
 ---
+## 🎥 Demo Video
 
-<!DOCTYPE html>
-<html>
-<head>
-  <title>LectureSnap Demo</title>
-</head>
-<body>
-  <h1>LectureSnap Demo</h1>
+> 📺 **Watch the complete LectureSnap demo on YouTube**
 
-  <video width="100%" controls autoplay muted>
-    <source src="LectureSnap_Demo.mp4" type="video/mp4">
-  </video>
+[![Watch LectureSnap Demo](https://img.youtube.com/vi/7TEhAo5l5b4/maxresdefault.jpg)](https://youtu.be/7TEhAo5l5b4)
 
-</body>
-</html>
+🔗 **YouTube Demo:** https://youtu.be/7TEhAo5l5b4
+
 
 🔗 https://jumpshare.com/s/KMiDfXSERt4oo6gxI9Bg
 
