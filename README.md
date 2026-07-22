@@ -42,21 +42,40 @@ Nobody has properly built a pipeline that goes all the way from raw input — a 
 
 LectureSnap is a four-stage AI pipeline that processes any lecture recording, meeting video, or PDF and produces a complete study kit in minutes.
 
+
+
+---
+
+
+## 🏗 Architecture
+
 ```
-Upload (PDF / Video / Audio)
-        ↓
-Stage 1 — Text Extraction
-        ↓
-Stage 2 — AI Structuring
-        ↓
-Stage 3 — Slide Generation
-        ↓
-Stage 4 — Teacher Video
-        ↓
-Everything saved to Backblaze B2
+        Upload File
+    (PDF / Audio / Video)
+              │
+              ▼
+      Text Extraction
+ (PyMuPDF / Whisper)
+              │
+              ▼
+      AI Topic Analysis
+      (Groq Llama 3.1)
+              │
+              ▼
+     Professional Slides
+ (Pollinations + Pillow)
+              │
+              ▼
+      Teacher Narration
+   (Edge-TTS + FFmpeg)
+              │
+              ▼
+     Backblaze B2 Storage
 ```
 
 ---
+
+
 
 
 ## How Each Stage Works
