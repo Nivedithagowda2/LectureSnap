@@ -5,6 +5,19 @@
 
 ---
 
+
+## 🎥 Demo Video
+
+> 📺 **Watch the complete LectureSnap demo on YouTube**
+
+[![Watch LectureSnap Demo](https://img.youtube.com/vi/7TEhAo5l5b4/maxresdefault.jpg)](https://youtu.be/7TEhAo5l5b4)
+
+🔗 **YouTube Demo:** https://youtu.be/7TEhAo5l5b4
+
+
+🔗 https://jumpshare.com/s/KMiDfXSERt4oo6gxI9Bg
+
+
 ## The Problem
 
 Think about what happens after a 1-hour lecture ends.
@@ -44,16 +57,6 @@ Everything saved to Backblaze B2
 ```
 
 ---
-## 🎥 Demo Video
-
-> 📺 **Watch the complete LectureSnap demo on YouTube**
-
-[![Watch LectureSnap Demo](https://img.youtube.com/vi/7TEhAo5l5b4/maxresdefault.jpg)](https://youtu.be/7TEhAo5l5b4)
-
-🔗 **YouTube Demo:** https://youtu.be/7TEhAo5l5b4
-
-
-🔗 https://jumpshare.com/s/KMiDfXSERt4oo6gxI9Bg
 
 
 ## How Each Stage Works
