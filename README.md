@@ -134,7 +134,7 @@ This means every output is durable, versioned, and accessible. Users can come ba
 ## Tech Stack
 
 | Component | Technology | 
-|---|---|---|
+|---|---|
 | Backend | Python + FastAPI | 
 | Cloud Storage | Backblaze B2 | 
 | PDF Extraction | PyMuPDF | Free |
