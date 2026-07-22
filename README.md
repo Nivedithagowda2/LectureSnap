@@ -103,7 +103,7 @@ Every upload becomes:
 
 
 
-## How Each Stage Works
+## ⚙  How Each Stage Works
 
 ### Stage 1 — Text Extraction
 The uploaded file goes directly to Backblaze B2 cloud storage. Then:
@@ -147,7 +147,7 @@ Output: `teacher_video.mp4` uploaded to Backblaze B2. Downloadable directly from
 
 ---
 
-## Why Backblaze B2
+## ☁ Why Backblaze B2
 
 Every file produced at every stage is saved to Backblaze B2:
 
@@ -175,7 +175,7 @@ This means every output is durable, versioned, and accessible. Users can come ba
 
 ---
 
-## Tech Stack
+## 🛠 Tech Stack
 
 | Component | Technology | 
 |---|---|
@@ -192,7 +192,7 @@ This means every output is durable, versioned, and accessible. Users can come ba
 
 ---
 
-## How to Run
+## ▶ How to Run
 
 ### Step 1 — Prerequisites
 
@@ -239,7 +239,7 @@ Open your browser at **http://localhost:8000**
 
 ---
 
-## What Makes LectureSnap Different
+## ⭐ What Makes LectureSnap Different
 
 | Feature | Traditional tools | LectureSnap |
 |---|---|---|
@@ -254,7 +254,7 @@ Open your browser at **http://localhost:8000**
 
 ---
 
-## Project Structure
+## 📂  Project Structure
 
 ```
 lecturesnapfull/
