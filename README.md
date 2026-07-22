@@ -45,6 +45,11 @@ Everything saved to Backblaze B2
 
 ---
 
+## 🎥 Demo Video
+
+[![LectureSnap Demo](Screenshot%202026-07-22%20142552.png)](https://youtu.be/YOUR_VIDEO_LINK)
+
+
 ## How Each Stage Works
 
 ### Stage 1 — Text Extraction
