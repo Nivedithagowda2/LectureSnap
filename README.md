@@ -238,5 +238,5 @@ This is not a wrapper around a single AI call. It is a multi-stage pipeline wher
 
 ---
 
-*Built by Niveditha Gowda*
-*Department of Computer Science*
+*Built by Niveditha *
+*Linkdin: https://www.linkedin.com/in/niveditha-89ba04356/*
