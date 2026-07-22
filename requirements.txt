@@ -1,0 +1,10 @@
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+boto3==1.34.101
+openai>=1.52.0
+pymupdf==1.24.7
+python-dotenv==1.0.1
+httpx==0.27.2
+Pillow==10.3.0
+gtts>=2.5.0

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LectureSnap — AI Study Videos</title>
+<meta name="description" content="Upload any lecture, PDF or recording. LectureSnap extracts key topics, generates beautiful slides, and creates a teacher-style narrated video — all powered by AI."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#080C18;--surface:#0F1629;--card:#141D35;--border:#1E2A4A;
+  --accent:#6366F1;--accent2:#F59E0B;--text:#F1F5F9;--muted:#64748B;
+  --success:#10B981;--error:#EF4444;--radius:14px;
+  --video:#8B5CF6;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+header{width:100%;padding:16px 40px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.logo{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.logo-text{font-size:17px;font-weight:700;letter-spacing:-0.4px;}
+.logo-text span{color:var(--accent);}
+
+main{width:100%;max-width:900px;padding:40px 20px 80px;display:flex;flex-direction:column;gap:24px;}
+
+.hero{text-align:center;padding:8px 0 4px;}
+.hero h1{font-size:clamp(24px,5vw,40px);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:10px;}
+.hero h1 em{font-style:normal;color:var(--accent);}
+.hero p{color:var(--muted);font-size:14px;line-height:1.6;max-width:480px;margin:0 auto;}
+
+/* Pipeline */
+.pipeline{display:flex;align-items:center;justify-content:center;}
+.ps{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;}
+.ps:not(:last-child)::after{content:'';position:absolute;top:15px;left:calc(50% + 16px);width:calc(100% - 32px);height:2px;background:var(--border);transition:background 0.4s;}
+.ps.active:not(:last-child)::after,.ps.done:not(:last-child)::after{background:var(--accent);}
+.ps.done:not(:last-child)::after{background:var(--success);}
+.pi{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.3s;position:relative;z-index:1;}
+.ps.active .pi{border-color:var(--accent);background:rgba(99,102,241,0.15);box-shadow:0 0 10px rgba(99,102,241,0.3);}
+.ps.done .pi{border-color:var(--success);background:rgba(16,185,129,0.15);}
+.pl{font-size:9px;color:var(--muted);text-align:center;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;max-width:55px;}
+.ps.active .pl{color:var(--accent);}
+.ps.done .pl{color:var(--success);}
+
+/* Upload */
+.upload-card{background:var(--card);border:2px dashed var(--border);border-radius:var(--radius);padding:40px 32px;text-align:center;cursor:pointer;transition:all 0.25s;position:relative;}
+.upload-card:hover,.upload-card.drag{border-color:var(--accent);background:rgba(99,102,241,0.05);}
+.upload-card input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;}
+.upload-card h2{font-size:17px;font-weight:700;margin-bottom:6px;}
+.upload-card p{color:var(--muted);font-size:13px;}
+.ftags{display:flex;gap:7px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.ft{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;}
+
+/* Panels */
+.panel{display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+.ph{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sp{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ph h3{font-size:14px;font-weight:600;}
+.slog{display:flex;flex-direction:column;gap:7px;}
+.li{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);opacity:0;transform:translateY(4px);transition:all 0.3s;}
+.li.show{opacity:1;transform:none;}
+.li.done{color:var(--text);}
+.ld{width:6px;height:6px;border-radius:50%;background:var(--border);margin-top:4px;flex-shrink:0;}
+.li.done .ld{background:var(--success);}
+.li.active .ld{background:var(--accent);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* Error */
+#err{display:none;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:var(--radius);padding:14px 18px;color:#FCA5A5;font-size:13px;}
+#err strong{display:block;margin-bottom:3px;color:var(--error);}
+
+/* Results common */
+.sec-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:7px;}
+.results{display:none;flex-direction:column;gap:16px;}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:9px;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px;text-align:center;}
+.sv{font-size:18px;font-weight:800;color:var(--accent);}
+.sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+
+/* Preview */
+.prev{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px;font-size:12px;line-height:1.7;color:#94A3B8;max-height:140px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;}
+.prev::-webkit-scrollbar{width:3px;}
+.prev::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,var(--accent),#8B5CF6);border:none;color:#fff;padding:13px 26px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:opacity 0.2s,transform 0.15s;width:fit-content;}
+.cta:hover{opacity:0.9;transform:translateY(-1px);}
+.cta:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.cta.sec{background:var(--surface);border:1px solid var(--border);color:var(--text);}
+.cta.sec:hover{border-color:var(--accent);}
+.cta.video-btn{background:linear-gradient(135deg,#7C3AED,#EC4899);box-shadow:0 4px 24px rgba(139,92,246,0.35);}
+.cta.video-btn:hover{box-shadow:0 6px 32px rgba(139,92,246,0.5);}
+
+/* B2 tree */
+.b2{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 14px;font-family:monospace;font-size:11px;line-height:1.9;color:var(--muted);white-space:pre;overflow-x:auto;}
+.b2 .fld{color:var(--accent2);font-weight:600;}
+.b2 .ok{color:var(--success);}
+.b2 .nd{color:var(--border);}
+.badge{background:rgba(99,102,241,0.15);color:var(--accent);border-radius:3px;padding:1px 5px;font-size:9px;margin-left:4px;}
+.badge.v{background:rgba(139,92,246,0.2);color:#C4B5FD;}
+
+/* Doc summary */
+.doc-card{background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.2);border-radius:var(--radius);padding:16px 20px;}
+.doc-title{font-size:18px;font-weight:800;letter-spacing:-0.4px;margin-bottom:6px;}
+.doc-sum{color:#94A3B8;font-size:13px;line-height:1.65;}
+
+/* Topic cards */
+.tgrid{display:flex;flex-direction:column;gap:10px;}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px 18px;transition:border-color 0.2s;}
+.tc:hover{border-color:rgba(99,102,241,0.35);}
+.th{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;}
+.tn{background:var(--accent);color:#fff;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.tt{font-size:13px;font-weight:700;flex:1;}
+.tp{font-size:10px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 6px;white-space:nowrap;flex-shrink:0;}
+.tbullets{display:flex;flex-direction:column;gap:5px;}
+.tb{display:flex;gap:7px;font-size:12px;color:#94A3B8;line-height:1.5;}
+.bd{width:4px;height:4px;border-radius:50%;background:var(--accent2);margin-top:6px;flex-shrink:0;}
+
+/* Slides grid */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.sgrid{grid-template-columns:1fr;}}
+.scard{border-radius:11px;overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:all 0.2s;}
+.scard:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,0.2);}
+.scard img{width:100%;display:block;}
+.scap{background:var(--card);padding:9px 12px;font-size:11px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.scap .num{background:var(--accent);color:#fff;width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+
+/* ── Video result styles ── */
+.video-hero{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(236,72,153,0.08));border:1px solid rgba(139,92,246,0.3);border-radius:var(--radius);padding:20px;text-align:center;}
+.video-hero h3{font-size:16px;font-weight:800;margin-bottom:6px;background:linear-gradient(135deg,#A78BFA,#F472B6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.video-hero p{color:var(--muted);font-size:12px;}
+.video-wrap{border-radius:11px;overflow:hidden;border:2px solid rgba(139,92,246,0.35);background:#000;box-shadow:0 8px 40px rgba(139,92,246,0.25);}
+.video-wrap video{width:100%;display:block;max-height:480px;}
+.script-box{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px;font-size:12px;line-height:1.8;color:#94A3B8;font-style:italic;max-height:160px;overflow-y:auto;position:relative;}
+.script-box::before{content:'Script preview';position:absolute;top:-8px;left:12px;background:var(--surface);padding:0 6px;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;font-style:normal;}
+.script-box::-webkit-scrollbar{width:3px;}
+.script-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.vstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.voice-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(139,92,246,0.15);color:#C4B5FD;border:1px solid rgba(139,92,246,0.3);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;}
+
+/* Modal */
+#modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+#modal.open{display:flex;}
+#modal-img{max-width:95vw;max-height:92vh;border-radius:12px;object-fit:contain;}
+#modal-x{position:absolute;top:16px;right:20px;background:none;border:none;color:#fff;font-size:26px;cursor:pointer;line-height:1;}
+
+/* Subtle entrance animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+.results.show-anim > *{animation:fadeUp 0.35s ease both;}
+.results.show-anim > *:nth-child(1){animation-delay:0.05s;}
+.results.show-anim > *:nth-child(2){animation-delay:0.12s;}
+.results.show-anim > *:nth-child(3){animation-delay:0.19s;}
+.results.show-anim > *:nth-child(4){animation-delay:0.26s;}
+.results.show-anim > *:nth-child(5){animation-delay:0.33s;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">📚</div>
+  <span class="logo-text">Lecture<span>Snap</span></span>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Upload anything.<br/><em>Understand everything.</em></h1>
+    <p>Drop a lecture recording, meeting video, or 100-page PDF. LectureSnap extracts text, finds key topics, generates beautiful study slides — and creates a <strong>teacher-style narrated video</strong> with AI voice.</p>
+  </section>
+
+  <!-- Pipeline -->
+  <div class="pipeline">
+    <div class="ps active" id="s-upload"><div class="pi">⬆️</div><div class="pl">Upload</div></div>
+    <div class="ps" id="s-extract"><div class="pi">📝</div><div class="pl">Extract</div></div>
+    <div class="ps" id="s-structure"><div class="pi">🧠</div><div class="pl">Structure</div></div>
+    <div class="ps" id="s-slides"><div class="pi">🖼️</div><div class="pl">Slides</div></div>
+    <div class="ps" id="s-video"><div class="pi">🎬</div><div class="pl">Video</div></div>
+  </div>
+
+  <!-- Upload -->
+  <div class="upload-card" id="upload-card">
+    <input type="file" id="fi" accept=".pdf,.mp4,.mov,.avi,.webm,.mkv,.mp3,.wav,.m4a,.ogg,.flac"/>
+    <div style="font-size:38px;margin-bottom:10px;">🎯</div>
+    <h2>Drop your file here</h2>
+    <p>Lecture recording, meeting video, or large PDF</p>
+    <div class="ftags">
+      <span class="ft">📄 PDF</span>
+      <span class="ft">🎬 MP4 / MOV</span>
+      <span class="ft">🎙️ MP3 / WAV / M4A</span>
+    </div>
+  </div>
+
+  <!-- Upload processing -->
+  <div class="panel" id="p1">
+    <div class="ph"><div class="sp"></div><h3 id="t1">Processing…</h3></div>
+    <div class="slog" id="l1"></div>
+  </div>
+
+  <!-- Error -->
+  <div id="err"><strong>Something went wrong</strong><span id="emsg"></span></div>
+
+  <!-- Extract results -->
+  <div class="results" id="r1">
+    <div><div class="sec-lbl">Extracted from your file</div><div class="stats" id="stats"></div></div>
+    <div><div class="sec-lbl">Text preview</div><div class="prev" id="prev"></div></div>
+    <div><div class="sec-lbl">Saved to Backblaze B2</div><div class="b2" id="b2-1"></div></div>
+    <button class="cta" id="btn-struct" onclick="runStructure()">🧠 Identify Topics with AI</button>
+  </div>
+
+  <!-- Structure processing -->
+  <div class="panel" id="p2">
+    <div class="ph"><div class="sp"></div><h3 id="t2">Analysing document…</h3></div>
+    <div class="slog" id="l2"></div>
+  </div>
+
+  <!-- Topics results -->
+  <div class="results" id="r2">
+    <div class="doc-card"><div class="doc-title" id="doc-title"></div><div class="doc-sum" id="doc-sum"></div></div>
+    <div><div class="sec-lbl">Topics identified</div><div class="tgrid" id="tgrid"></div></div>
+    <div><div class="sec-lbl">Saved to Backblaze B2</div><div class="b2" id="b2-2"></div></div>
+    <button class="cta" id="btn-slides" onclick="runSlides()">🖼️ Generate Study Slides</button>
+  </div>
+
+  <!-- Slides processing -->
+  <div class="panel" id="p3">
+    <div class="ph"><div class="sp"></div><h3 id="t3">Generating slides…</h3></div>
+    <div class="slog" id="l3"></div>
+  </div>
+
+  <!-- Slides results -->
+  <div class="results" id="r3">
+    <div><div class="sec-lbl" id="slide-count-lbl">Slides generated</div><div class="sgrid" id="sgrid"></div></div>
+    <div><div class="sec-lbl">Saved to Backblaze B2</div><div class="b2" id="b2-3"></div></div>
+    <button class="cta video-btn" id="btn-video" onclick="runVideo()">🎬 Generate Teacher Video</button>
+  </div>
+
+  <!-- Video processing -->
+  <div class="panel" id="p4">
+    <div class="ph"><div class="sp" style="border-top-color:#8B5CF6;"></div><h3 id="t4">Creating teacher video…</h3></div>
+    <div class="slog" id="l4"></div>
+  </div>
+
+  <!-- Video results -->
+  <div class="results" id="r4">
+    <div class="video-hero">
+      <h3>🎬 Teacher-Style Summary Video</h3>
+      <p>AI-narrated lesson video — real teaching, not bullet points read aloud</p>
+    </div>
+
+    <!-- Embedded video player -->
+    <div>
+      <div class="sec-lbl">Your video</div>
+      <div class="video-wrap" id="video-wrap">
+        <video id="video-player" controls preload="metadata">
+          <source id="video-src" src="" type="video/mp4"/>
+          Your browser does not support video playback.
+        </video>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="vstats" id="v-stats"></div>
+
+    <!-- Script preview -->
+    <div>
+      <div class="script-box" id="script-preview"></div>
+    </div>
+
+    <!-- B2 tree -->
+    <div><div class="sec-lbl">Saved to Backblaze B2</div><div class="b2" id="b2-4"></div></div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a id="video-download" href="#" download="teacher_video.mp4" class="cta video-btn" style="text-decoration:none;">⬇️ Download MP4</a>
+      <button class="cta sec" onclick="resetApp()">← Upload another file</button>
+    </div>
+  </div>
+</main>
+
+<!-- Slide modal -->
+<div id="modal"><button id="modal-x" onclick="closeModal()">×</button><img id="modal-img" src="" alt=""/></div>
+
+<script>
+let sid=null;
+const $ = id => document.getElementById(id);
+const uc=$('upload-card'), fi=$('fi'), err=$('err'), emsg=$('emsg');
+
+// drag/drop
+uc.addEventListener('dragover',e=>{e.preventDefault();uc.classList.add('drag');});
+uc.addEventListener('dragleave',()=>uc.classList.remove('drag'));
+uc.addEventListener('drop',e=>{e.preventDefault();uc.classList.remove('drag');if(e.dataTransfer.files[0])go(e.dataTransfer.files[0]);});
+fi.addEventListener('change',()=>{if(fi.files[0])go(fi.files[0]);});
+
+function step(id,state){const el=$('s-'+id);if(!el)return;el.classList.remove('active','done');if(state)el.classList.add(state);}
+function log(cid,text,state='active'){
+  const c=$(cid),item=document.createElement('div');
+  item.className='li';item.innerHTML=`<div class="ld"></div><span>${text}</span>`;
+  c.appendChild(item);requestAnimationFrame(()=>item.classList.add('show',state));return item;
+}
+function done(item,text){item.querySelector('span').textContent=text;item.classList.remove('active');item.classList.add('done');}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function ftype(n){const e=n.split('.').pop().toLowerCase();if(e==='pdf')return'PDF';if(['mp4','mov','avi','webm','mkv'].includes(e))return'video';return'audio';}
+function hideAll(){['p1','err','r1','p2','r2','p3','r3','p4','r4'].forEach(id=>{const el=$(id);el.style.display='none';});}
+
+// ── UPLOAD ──────────────────────────────────────────────────
+async function go(file){
+  hideAll();uc.style.display='none';$('l1').innerHTML='';
+  $('p1').style.display='block';$('t1').textContent=`Processing ${file.name}…`;
+  step('upload','active');
+  const ft=ftype(file.name);
+  const a=log('l1',`Uploading ${file.name} to Backblaze B2…`);
+  try{
+    const form=new FormData();form.append('file',file);
+    const res=await fetch('/api/upload',{method:'POST',body:form});
+    if(!res.ok){const e=await res.json().catch(()=>({detail:'Unknown error'}));throw new Error(e.detail||`HTTP ${res.status}`);}
+    const data=await res.json();
+    done(a,'✓ File uploaded and saved to B2');
+    step('upload','done');step('extract','active');
+    await sleep(300);
+    const b=log('l1',ft==='PDF'?`Extracting text from ${data.stats.total_pages??'?'} pages…`:`Transcribing ${ft} with Whisper…`);
+    await sleep(500);
+    done(b,ft==='PDF'
+      ?`✓ ${(data.stats.word_count||0).toLocaleString()} words extracted from ${data.stats.total_pages} pages`
+      :`✓ ${(data.stats.word_count||0).toLocaleString()} words transcribed`);
+    step('extract','done');
+    $('t1').textContent='Text extracted ✅';
+    await sleep(400);$('p1').style.display='none';
+    sid=data.session_id;showR1(data,ft);
+  }catch(e){
+    $('p1').style.display='none';uc.style.display='block';
+    err.style.display='block';emsg.textContent=e.message;step('upload','active');
+  }
+}
+
+function showR1(data,ft){
+  const sr=$('stats');sr.innerHTML='';
+  const s=[{v:ft,l:'File Type'},{v:(data.stats.word_count||0).toLocaleString(),l:'Words'}];
+  if(data.stats.total_pages)s.push({v:data.stats.total_pages,l:'Pages'});
+  if(data.stats.segment_count)s.push({v:data.stats.segment_count,l:'Segments'});
+  s.push({v:'2/2',l:'In B2'});
+  s.forEach(x=>{sr.innerHTML+=`<div class="sc"><div class="sv">${x.v}</div><div class="sl">${x.l}</div></div>`;});
+  $('prev').textContent=data.preview||'';
+  const sh=sid.split('-')[0]+'…';
+  const of=ft==='PDF'?'original.pdf':ft==='video'?'original.mp4':'original.mp3';
+  $('b2-1').innerHTML=`<span class="fld">recordings/${sh}/</span>\n`+
+    `  input/      <span class="ok">✓ ${of}</span><span class="badge">saved</span>\n`+
+    `  processing/ <span class="ok">✓ extracted_text.json</span><span class="badge">saved</span>\n`+
+    `             <span class="nd">topics.json ← next</span>\n`+
+    `  slides/    <span class="nd">← after topics</span>`;
+  $('r1').style.display='flex';$('r1').classList.add('show-anim');
+}
+
+// ── STRUCTURE ────────────────────────────────────────────────
+async function runStructure(){
+  if(!sid)return;$('btn-struct').disabled=true;$('l2').innerHTML='';
+  $('p2').style.display='block';$('t2').textContent='Identifying topics with AI…';
+  step('structure','active');
+  const a=log('l2','Reading extracted text from B2…');
+  await sleep(400);done(a,'✓ Text retrieved from B2');
+  const b=log('l2','Sending to Groq AI (Llama 3.1) for analysis…');
+  try{
+    const res=await fetch(`/api/structure/${sid}`,{method:'POST'});
+    if(!res.ok){const e=await res.json().catch(()=>({detail:'Unknown'}));throw new Error(e.detail||`HTTP ${res.status}`);}
+    const data=await res.json();
+    done(b,`✓ ${data.topic_count} topics identified`);
+    await sleep(300);
+    const c=log('l2','Saving topics.json to B2…');
+    await sleep(400);done(c,'✓ topics.json saved to B2');
+    step('structure','done');$('t2').textContent='Topics structured ✅';
+    await sleep(400);$('p2').style.display='none';showR2(data);
+  }catch(e){
+    $('p2').style.display='none';$('btn-struct').disabled=false;
+    err.style.display='block';emsg.textContent=e.message;step('structure',null);
+  }
+}
+
+function showR2(data){
+  $('doc-title').textContent=data.document_title||'Document';
+  $('doc-sum').textContent=data.summary||'';
+  const tg=$('tgrid');tg.innerHTML='';
+  (data.topics||[]).forEach(t=>{
+    const bl=(t.bullets||[]).map(b=>`<div class="tb"><div class="bd"></div><span>${b}</span></div>`).join('');
+    tg.innerHTML+=`<div class="tc"><div class="th"><div class="tn">${t.id}</div><div class="tt">${t.title}</div><div class="tp">${t.position||''}</div></div><div class="tbullets">${bl}</div></div>`;
+  });
+  const sh=sid.split('-')[0]+'…';
+  $('b2-2').innerHTML=`<span class="fld">recordings/${sh}/processing/</span>\n`+
+    `  <span class="ok">✓ extracted_text.json</span>\n`+
+    `  <span class="ok">✓ topics.json</span><span class="badge">just saved</span>\n`+
+    `<span class="fld">recordings/${sh}/slides/</span>\n`+
+    `  <span class="nd">slide_01.png … ← click Generate below</span>`;
+  $('r2').style.display='flex';$('r2').classList.add('show-anim');
+}
+
+// ── SLIDES ───────────────────────────────────────────────────
+async function runSlides(){
+  if(!sid)return;$('btn-slides').disabled=true;$('l3').innerHTML='';
+  $('p3').style.display='block';$('t3').textContent='Generating slides…';
+  step('slides','active');
+  const a=log('l3','Loading topics from B2…');
+  await sleep(300);done(a,'✓ Topics loaded');
+  const b=log('l3','Fetching AI images from Pollinations.ai (retrying if slow)…');
+  const c=log('l3','Building professional slide layouts with Pillow…');
+  const d=log('l3','Saving PNG slides to Backblaze B2…');
+  try{
+    const res=await fetch(`/api/slides/${sid}`,{method:'POST'});
+    if(!res.ok){const e=await res.json().catch(()=>({detail:'Unknown'}));throw new Error(e.detail||`HTTP ${res.status}`);}
+    const data=await res.json();
+    const withImg=data.slides.filter(s=>s.had_image).length;
+    done(b,withImg>0?`✓ ${withImg}/${data.slide_count} images fetched (rest use geometric art)`:'✓ Used geometric art (Pollinations unavailable)');
+    done(c,`✓ ${data.slide_count} slides built`);
+    done(d,`✓ All slides saved to B2`);
+    step('slides','done');$('t3').textContent=`${data.slide_count} slides generated ✅`;
+    await sleep(400);$('p3').style.display='none';showR3(data);
+  }catch(e){
+    $('p3').style.display='none';$('btn-slides').disabled=false;
+    err.style.display='block';emsg.textContent=e.message;step('slides',null);
+  }
+}
+
+function showR3(data){
+  $('slide-count-lbl').textContent=`${data.slide_count} slides generated`;
+  const sg=$('sgrid');sg.innerHTML='';
+  (data.slides||[]).forEach(s=>{
+    sg.innerHTML+=`<div class="scard" onclick="openM('data:image/png;base64,${s.image_b64}')">
+      <img src="data:image/png;base64,${s.image_b64}" alt="Slide ${s.id}" loading="lazy"/>
+      <div class="scap"><div class="num">${s.id}</div>${s.title}</div>
+    </div>`;
+  });
+  const sh=sid.split('-')[0]+'…';
+  $('b2-3').innerHTML=`<span class="fld">recordings/${sh}/slides/</span>\n`+
+    (data.slides||[]).map(s=>`  <span class="ok">✓ slide_${String(s.id).padStart(2,'0')}.png</span><span class="badge">saved</span>`).join('\n')+
+    `\n  <span class="ok">✓ manifest.json</span><span class="badge">saved</span>`;
+  $('r3').style.display='flex';$('r3').classList.add('show-anim');
+}
+
+// ── VIDEO ────────────────────────────────────────────────────
+async function runVideo(){
+  if(!sid)return;$('btn-video').disabled=true;$('l4').innerHTML='';
+  $('p4').style.display='block';$('t4').textContent='Creating teacher video…';
+  step('video','active');
+
+  const a=log('l4','📝 Writing teaching script with Groq AI…');
+  const b=log('l4','🎙️ Generating teacher voice with ElevenLabs (may take ~30s)…');
+  const c=log('l4','🎬 Assembling video with Ken Burns + fades (ffmpeg)…');
+  const d=log('l4','☁️ Uploading teacher_video.mp4 to Backblaze B2…');
+
+  try{
+    const res=await fetch(`/api/video/${sid}`,{method:'POST'});
+    if(!res.ok){const e=await res.json().catch(()=>({detail:'Unknown'}));throw new Error(e.detail||`HTTP ${res.status}`);}
+    const data=await res.json();
+
+    done(a,`✓ Teaching script written — ${data.script_word_count} words`);
+    const voiceLbl = data.voice_source==='elevenlabs' ? 'ElevenLabs Rachel voice' : 'OpenAI nova voice (fallback)';
+    done(b,`✓ Narration generated via ${voiceLbl}`);
+    done(c,`✓ Video assembled — ${data.slide_count} slides with Ken Burns + fade transitions`);
+    done(d,`✓ teacher_video.mp4 saved to B2`);
+    step('video','done');$('t4').textContent='Teacher video ready ✅';
+    await sleep(500);$('p4').style.display='none';showR4(data);
+  }catch(e){
+    $('p4').style.display='none';$('btn-video').disabled=false;
+    err.style.display='block';emsg.textContent=e.message;step('video',null);
+  }
+}
+
+function showR4(data){
+  const videoUrl = `/api/download/${encodeURIComponent(data.b2_video_key)}`;
+
+  const player = $('video-player');
+  const src = $('video-src');
+  src.src = videoUrl;
+  player.load();
+
+  $('video-download').href = videoUrl;
+
+  // Stats
+  const vs = $('v-stats');
+  let vsrc, vsrcColor;
+  if(data.voice_source === 'elevenlabs'){
+    vsrc = '🎙️ ElevenLabs'; vsrcColor = '#C4B5FD';
+  } else if(data.voice_source === 'google_tts'){
+    vsrc = '🔊 Google TTS'; vsrcColor = '#6EE7B7';
+  } else {
+    vsrc = '🔊 TTS'; vsrcColor = '#94A3B8';
+  }
+
+  vs.innerHTML =
+    `<div class="sc"><div class="sv">${data.slide_count}</div><div class="sl">Slides</div></div>`+
+    `<div class="sc"><div class="sv">${data.script_word_count}</div><div class="sl">Script Words</div></div>`+
+    `<div class="sc" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+       <span class="voice-badge" style="color:${vsrcColor};border-color:${vsrcColor}33;">${vsrc}</span>
+       ${data.elevenlabs_error ? '<span style="font-size:9px;color:var(--muted);">ElevenLabs → fell back</span>' : ''}
+     </div>`;
+
+  // Script preview
+  $('script-preview').textContent = data.script_preview || '';
+
+  // B2 tree
+  const sh = sid.split('-')[0]+'…';
+  $('b2-4').innerHTML =
+    `<span class="fld">recordings/${sh}/video/</span>\n`+
+    `  <span class="ok">✓ script.txt</span><span class="badge v">saved</span>\n`+
+    `  <span class="ok">✓ narration.mp3</span><span class="badge v">saved</span>\n`+
+    `  <span class="ok">✓ teacher_video.mp4</span><span class="badge v">🎬 saved</span>`;
+
+  $('r4').style.display='flex';$('r4').classList.add('show-anim');
+}
+
+
+function openM(src){$('modal-img').src=src;$('modal').classList.add('open');}
+function closeModal(){$('modal').classList.remove('open');$('modal-img').src='';}
+$('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+function resetApp(){
+  hideAll();uc.style.display='block';fi.value='';sid=null;
+  $('btn-struct').disabled=false;$('btn-slides').disabled=false;$('btn-video').disabled=false;
+  ['upload','extract','structure','slides','video'].forEach(s=>step(s,s==='upload'?'active':null));
+  // reset video player
+  $('video-src').src='';$('video-player').load();
+  $('r1').classList.remove('show-anim');$('r2').classList.remove('show-anim');
+  $('r3').classList.remove('show-anim');$('r4').classList.remove('show-anim');
+}
+</script>
+</body>
+</html>
