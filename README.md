@@ -14,7 +14,6 @@
 
 🔗 **YouTube Demo:** https://youtu.be/7TEhAo5l5b4
 
-
 🔗 https://jumpshare.com/s/KMiDfXSERt4oo6gxI9Bg
 
 ## 🌐 Live Demo
@@ -31,6 +30,11 @@ https://lecturesnap.onrender.com/docs
 ### OpenAPI Specification
 
 https://lecturesnap.onrender.com/openapi.json
+
+### 🎓 AI Teacher-Style Video Demo
+Demonstrates the AI-generated teacher narration and educational video output.
+
+https://youtu.be/-ZJSYHItllc
 
 
 ## 🚀 Features
