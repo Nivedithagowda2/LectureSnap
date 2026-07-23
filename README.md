@@ -17,6 +17,22 @@
 
 🔗 https://jumpshare.com/s/KMiDfXSERt4oo6gxI9Bg
 
+## 🌐 Live Demo
+
+LectureSnap is deployed on Render and can be accessed here:
+
+**Public URL:**  
+https://lecturesnap.onrender.com
+
+### API Documentation (Swagger UI)
+
+https://lecturesnap.onrender.com/docs
+
+### OpenAPI Specification
+
+https://lecturesnap.onrender.com/openapi.json
+
+
 ## 🚀 Features
 
 - 📄 PDF, Audio & Video Processing
