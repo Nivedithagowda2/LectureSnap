@@ -191,6 +191,25 @@ This means every output is durable, versioned, and accessible. Users can come ba
 
 ---
 
+## Genblaze Workflow
+
+LectureSnap is designed as a modular AI media pipeline where each generation stage is independent and provider-agnostic.
+
+The current implementation orchestrates multiple AI services to generate educational media:
+
+- AI topic generation
+- AI image generation
+- AI voice narration
+- AI video assembly
+- Persistent storage in Backblaze B2
+
+The media pipeline is intentionally modular, allowing AI providers to be replaced or extended without changing the overall workflow.
+
+This architecture aligns with the orchestration approach promoted by Genblaze and can be adapted to use Genblaze-supported providers as the project evolves.
+
+
+---
+
 ## 🛠 Tech Stack
 
 | Component | Technology | 
