@@ -35,6 +35,7 @@ Demonstrates the AI-generated teacher narration and educational video output.
 
 https://youtu.be/-ZJSYHItllc
 
+---
 
 ## 🚀 Features
 
@@ -47,7 +48,7 @@ https://youtu.be/-ZJSYHItllc
 - 🎬 Automatic Educational Video Generation
 - ☁ Backblaze B2 Cloud Storage 
 
-
+---
 
 ## The Problem
 
