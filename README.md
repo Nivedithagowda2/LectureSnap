@@ -5,7 +5,6 @@
 
 ---
 
-
 ## 🎥 Demo Video
 
 > 📺 **Watch the complete LectureSnap demo on YouTube**
