@@ -1,7 +1,7 @@
 import os
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path 
 
 from PIL import Image 
 
