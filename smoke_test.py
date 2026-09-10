@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image 
 
 os.chdir(r'c:\Users\Niveditha gowda\Downloads\lecturesnapfull (3)\lecturesnapfull')
 sys.path.insert(0, os.getcwd())
