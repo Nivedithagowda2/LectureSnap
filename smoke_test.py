@@ -18,7 +18,7 @@ subprocess.run(
     ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'sine=frequency=1000:duration=2', '-vn', '-ac', '1', '-ar', '44100', 'test.mp3'],
     capture_output=True,
     text=True, 
-    check=False,
+    check=False, 
 )
  
 main.assemble_video([str(p1), str(p2)], 'test.mp3', 'out.mp4', ['A', 'B'])
