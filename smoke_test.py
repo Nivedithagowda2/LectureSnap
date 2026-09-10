@@ -20,7 +20,7 @@ subprocess.run(
     text=True,
     check=False,
 )
-
+ 
 main.assemble_video([str(p1), str(p2)], 'test.mp3', 'out.mp4', ['A', 'B'])
 
 out = Path('out.mp4')
