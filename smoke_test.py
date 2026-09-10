@@ -17,7 +17,7 @@ Image.new('RGB', (1280, 720), (0, 0, 255)).save(p2)
 subprocess.run( 
     ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'sine=frequency=1000:duration=2', '-vn', '-ac', '1', '-ar', '44100', 'test.mp3'],
     capture_output=True,
-    text=True,
+    text=True, 
     check=False,
 )
  
