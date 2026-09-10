@@ -9,7 +9,7 @@ os.chdir(r'c:\Users\Niveditha gowda\Downloads\lecturesnapfull (3)\lecturesnapful
 sys.path.insert(0, os.getcwd())
 import main
 
-p1 = Path('test1.png')
+p1 = Path('test1.png') 
 p2 = Path('test2.png')
 Image.new('RGB', (1280, 720), (255, 0, 0)).save(p1)
 Image.new('RGB', (1280, 720), (0, 0, 255)).save(p2)
