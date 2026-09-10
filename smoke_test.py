@@ -14,7 +14,7 @@ p2 = Path('test2.png')
 Image.new('RGB', (1280, 720), (255, 0, 0)).save(p1)  
 Image.new('RGB', (1280, 720), (0, 0, 255)).save(p2)
 
-subprocess.run(
+subprocess.run( 
     ['ffmpeg', '-y', '-f', 'lavfi', '-i', 'sine=frequency=1000:duration=2', '-vn', '-ac', '1', '-ar', '44100', 'test.mp3'],
     capture_output=True,
     text=True,
